@@ -10,6 +10,10 @@
 	renderer.setSize(window.innerWidth,window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
+	renderer.shadowMap.enabled=true;
+	renderer.shadowMap.soft=true;
+	renderer.shadowMap.type=THREE.PCFShadowMap;
+
 	camera.position.z=60;
 	camera.position.y=2;
 
@@ -22,11 +26,13 @@
 	});
 
 	let plane=new THREE.Mesh(planeGeometry,groundMaterial);
+	plane.receiveShadow=true;
+
 
 	let mesh;
 	let loader =new THREE.TextureLoader();
 
-	loader.load('black.jpg',function(texture){
+	loader.load('world.jpeg',function(texture){
 		let geometry=new THREE.SphereGeometry(20,100,100)
 
 		let material=new THREE.MeshBasicMaterial({
@@ -36,22 +42,22 @@
 		mesh=new THREE.Mesh(geometry,material);
 
 		mesh.position.y=25;
+		mesh.castShadow=true;
 		scene.add(mesh);
 	})
 
-	//let geometry=new THREE.BoxGeometry(1,1,1);
-
-	
-
-	//let mesh=new THREE.Mesh(geometry,groundMaterial);
-
 	let pointLight=new THREE.PointLight(0xdfebff);
 
-	pointLight.position.y=20;
+	pointLight.position.z=20;
+	pointLight.position.y=60;
 
-	//scene.background=new THREE.Color(0xeeeeee);
-	//scene.add(mesh);
-	//scene.add(new THREE.AmbientLight(0x404040))
+	pointLight.castShadow=true;
+
+	let helper = new THREE.CameraHelper(pointLight.shadow.camera)
+
+	scene.background=new THREE.Color(0xeeeeee);
+
+	scene.add(helper);
 	scene.add(plane);
 	scene.add(pointLight);
 
@@ -59,8 +65,7 @@
 
 	function loop(){
 		requestAnimationFrame(loop);
-		mesh.rotation.y+=0.01;
-		//mesh.rotation.z+=0.03;
+		mesh.rotation.y+=0.001;
 		renderer.render(scene,camera);
 	}
 
