@@ -15,5 +15,13 @@
 
 	document.body.appendChild(renderer.domElement);
 
-	renderer.render(scene,camera);
+	requestAnimationFrame(loop)
+
+	function loop(){
+		requestAnimationFrame(loop)
+		renderer.render(scene,camera);
+	}
+
+	loop();
+
 })();
